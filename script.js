@@ -5,8 +5,9 @@ const bottom = document.getElementById("bottom");
 const buttons = document.getElementById("buttons");
 const container = document.getElementById("container");
 const continueElement = document.getElementById("continue");
-const speed = 60;
-var numHostages = 39;
+const speed = 50;
+const maxNumQuestions = 9;
+var numHostages = [39, 36, 30, 5, 92, 67, 64, 14][Math.floor(Math.random() * 8)] + 1;
 var day = 0;
 var buffer = "";
 var started = false;
@@ -16,15 +17,17 @@ var doNewDay = false;
 var didFirstQuestion = false;
 var didSecondQuestion = false;
 var readyToContinue = false;
-var numQuestions = 4;
+var numQuestions = maxNumQuestions;
 var exposition = [
     `????: Ah, Detective, so nice to hear from you. I was worried you might never call.\n\n`,
-    `Detective: You know why I'm here. Release the hostages.\n\n`,
-    `????: Now Detective, where are your manners? I'm a fan of your work, so I will meet your demands, as long as you can meet mine.\n\n`,
-    `Detective: List your demands. The faster we get this over with, the better.\n\n`,
-    `????: Why so eager to leave? You're just like the children locked in the basement, so impatient. We can have lots of fun, just give me a chance.\n\n`,
-    `Detective: Stop playing games. Tell me what you want, and let those innocent people go.\n\n`,
-    `????: Actually, it is you who will be playing games. All I need from you is the number of hostages in my possession. Tell me this, and they're all yours.\n\n`,
+    `Detective: We are tracking your location as we speak. Give up the hostages now, and you won't have to get hurt.\n\n`,
+    `????: I'm sorry, what did you say? I can't hear you over the sound of screaming coming from the other room. Should I kill a few people so I can hear you better?\n\n`,
+    `Detective: Wait, you don't have to hurt anyone. Just tell us your demands, and we will get you what you want.\n\n`,
+    `????: Demands, demands, demands! Everyone is so demanding these days. You demand the hostages. The adults demand food for the starving children in the basement. Why should I contribute to this excessive impatience? We can have lots of fun, just give me a chance.\n\n`,
+    `Detective: ...\n\n`,
+    `????: What? Is your puny, little brain incapable of comprehending that I don't want anything? I suppose I can placate you... ah yes! I've got it! I know what I want, but I won't tell you.\n\n`,
+    `Detective: How can I meet your demands if you don't tell me what they are? Please, tell me what you want, and this can all be over.\n\n`,
+    `????: QUIET! Sorry, not you. The sound of handcuffs rattling against metal pipes is absolutely infuriating. Anyways, I'm bored, so my demands are that we play a game. Ready for the rules? Guess how many hostages I have. Do this, and they're all yours.\n\n`,
     `Detective: You know that's impossible. It's between 1 and 100, and that's all anybody knows.\n\n`,
     `????: Well, it seems you have a lot of guessing to do, Detective, so get to it, because their lives depend on it.\n\n`
 ]
@@ -33,41 +36,37 @@ var afterFirstQuestion = [
     `????: No.\n\n`,
     `Detective: "No"? That's it?? You won't clarify or give me any hints?\n\n`,
     `????: Yep.\n\n`,
-    `Detective: Alright, looks like I'm guessing every number. Are there—\n\n????: Let me cut you off there, Detective. First, you can only ask me 4 questions per day—that's what my boss told me—and you've already asked two, including your recent disbelief to me saying no. Second, I only allow yes-or-no questions. Those are the rules. Think carefully about your next question.\n\n`,
+    `Detective: Alright, looks like I'm guessing every number. Are there—\n\n????: Let me cut you off there, Detective. First, for every ${maxNumQuestions} questions you ask that don't guess the correct answer, I am going to kill a hostage—that's what my boss told me to do. You've already asked two questions. Second, I only allow yes-or-no questions. Those are the rules. Think carefully about your next question.\n\n`,
 ]
 
 var restOfLevel = []
 
 const nos = [
     `????: Signs point to no. Even my magic 8 ball is doing better than you.\n\n`,
-    `????: No.\n\n`,
+    `????: No. Do you really care about these people?\n\n`,
     `????: Nope. Keep going, I am loving this.\n\n`,
     `????: No, sorry. Well, I'm not sorry, but you're still incorrect.\n\n`,
-    `????: No.\n\n`,
-    `????: Nope.\n\n`,
-    `????: The answer is no.\n\n`,
+    `????: The answer is no. QUIET! Sorry, they scream every time you get a question wrong.\n\n`,
 ]
 
 const yesses = [
     `????: Signs point to yes. You're finally keeping up with my magic 8 ball.\n\n`,
-    `????: Yes.\n\n`,
+    `????: Yes, but you still have a long ways to go if you want to keep these people alive.\n\n`,
     `????: Indeed, you are correct. Keep going, I am loving this.\n\n`,
     `????: Yes, that is correct. You're giving these helpless souls hope. Try not to screw it up.\n\n`,
-    `????: Yes.\n\n`,
-    `????: Indeed, that is true.\n\n`,
     `????: Yes, that is correct.\n\n`,
+    `????: You are correct, but are you making progress fast enough? I think your pace is wonderful, but these people may have a different opinion.\n\n`
 ]
 
 const newdaystarts = [
-    `????: To answer your question from yesterday...\n\n`
+    `????: To answer your question from earlier...\n\n`
 ]
 
 const unhingedStatements = [
-    "Hope you slept well in your warm bed. The hostages have been sleeping on the concrete. I hear it's good for your back.",
-    "The children have been asking about when you will finally rescue them.",
-    "The hostages are trying to scratch their way out. I wonder if they'll make it out faster than you can save them. At your current pace, they might.",
-    "Another day, another hostage released. Just kidding, I'm not letting any escape.",
-    "You again? I thought you gave up."
+    "Great, that one's going to take forever to clean out of the carpet. Lucky me. The state of this box I call a home is really deteriorating.",
+    "Now his teddy bear can go to another child. Know that your questions really have made a difference in the world.",
+    "I can never relate to only children. I have too many siblings in the Oracle Society, and we're all so very like-minded. I also can't relate to being dead, but that's besides the point.",
+    "Another one bites the dust! Ah, such a good song."
 ]
 
 const exactGuessButton = document.createElement("button");
@@ -172,7 +171,7 @@ function doGuess(id, str1plural, str2plural, str1singular, str2singular) {
 
     if (!didSecondQuestion && didFirstQuestion) {
         didSecondQuestion = true;
-        restOfLevel.unshift(`????: Yes, the number of hostages is either greater than or less than ${num}. I don't mean to judge, but that seems like a silly question to ask. The rest of the Oracle Society was expecting better from you. I suppose not. Anyways, time to ask the last question of the day. No pressure.\n\n`);
+        restOfLevel.unshift(`????: Yes, the number of hostages is either greater than or less than ${num}. I don't mean to judge, but that seems like a silly question to ask. The rest of the Oracle Society was expecting better from you. I suppose not. Anyways, the questions are counting down. No pressure.\n\n`);
     } else if (!didFirstQuestion) {
         if (num === numHostages)
             numHostages = 100 - numHostages;
@@ -207,13 +206,18 @@ function doGuess(id, str1plural, str2plural, str1singular, str2singular) {
     doOptionSelect = false;
 
     if (!numQuestions) {
-        buffer += `????: I'll answer that tomorrow...\n\n`;
+        buffer += `????: I'll answer that in a moment...      \n\n`;
         doNewDay = true;
     }
 }
 
 function finishGame() {
+    doOptionSelect = true;
     finishedGame = true;
+    if (!numHostages) {
+        buffer += `????: Aaaand they're all dead. Congratulations, you failed. The next time you approach a member of the Oracle Society, be prepared with better questions.`;
+        return;
+    }
     document.getElementById("title").innerText = "";
     buffer += `????: You are correct. The hostages are located at 01101 Archimedes Avenue. In each room, there are either 3 or 4 hostages, and the doors can all be unlocked with the key underneath the doormat.\n\n`;
     setTimeout(() => {
@@ -232,10 +236,15 @@ function finishGame() {
 }
 
 function generateNewDayStart() {
-    return `????: ${unhingedStatements[Math.floor(Math.random() * unhingedStatements.length)]} Anyways, to answer your question from yesterday...\n\n`
+    return `????: ${unhingedStatements[Math.floor(Math.random() * unhingedStatements.length)]} Anyways, to answer your question from earlier...\n\n`
 }
 
 function newDay() {
+    numHostages -= 1;
+    if (!numHostages) {
+        finishGame();
+        return;
+    }
     buffer = "";
     dialogue.innerText = "";
     if (day > 0) {
@@ -243,10 +252,10 @@ function newDay() {
     }
     document.getElementById("title").innerText = ``;
     document.getElementById("title").style.animation = "fadeIn 5s";
-    document.getElementById("title").innerText = `Day ${day}`;
+    document.getElementById("title").innerText = `Deaths: ${day}`;
     
     day += 1;
-    numQuestions = 4;
+    numQuestions = maxNumQuestions;
 }
 
 document.addEventListener("keyup", function(event) {
