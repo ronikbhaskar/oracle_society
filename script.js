@@ -20,14 +20,16 @@ var readyToContinue = false;
 var numQuestions = maxNumQuestions;
 var exposition = [
     `????: Ah, Detective, so nice to hear from you. I was worried you might never call.\n\n`,
-    `Detective: We are tracking your location as we speak. Give up the hostages now, and you won't have to get hurt.\n\n`,
+    `Detective: You don't have to do this. Let them go, and this will all be over.\n\n`,
+    `????: What could you possibly be talking about? I'm just throwing a party with some strangers, is that against the law?\n\n`,
+    `Detective: Let me make myself clear. Release the hostages, and you won't get hurt.\n\n`,
     `????: I'm sorry, what did you say? I can't hear you over the sound of screaming coming from the other room. Should I kill a few people so I can hear you better?\n\n`,
     `Detective: Wait, you don't have to hurt anyone. Just tell us your demands, and we will get you what you want.\n\n`,
-    `????: Demands, demands, demands! Everyone is so demanding these days. You demand the hostages. The adults demand food for the starving children in the basement. Why should I contribute to this excessive impatience? We can have lots of fun, just give me a chance.\n\n`,
+    `????: Demands, demands, demands! Everyone is so demanding these days. You demand the hostages. The adults demand food for the starving children in the basement. Why should I contribute to this excessive impatience? I have everything I want, so I think I will just sit here, thank you very much.\n\n`,
     `Detective: ...\n\n`,
     `????: What? Is your puny, little brain incapable of comprehending that I don't want anything? I suppose I can placate you... ah yes! I've got it! I know what I want, but I won't tell you.\n\n`,
-    `Detective: How can I meet your demands if you don't tell me what they are? Please, tell me what you want, and this can all be over.\n\n`,
-    `????: QUIET! Sorry, not you. The sound of handcuffs rattling against metal pipes is absolutely infuriating. Anyways, I'm bored, so my demands are that we play a game. Ready for the rules? Guess how many hostages I have. Do this, and they're all yours.\n\n`,
+    `Detective: How can I meet your demands if you don't tell me what they are? The sooner you list them, the sooner we can get them to you.\n\n`,
+    `????: QUIET! Sorry, not you. The sound of handcuffs rattling against metal pipes is absolutely infuriating. Anyways, I'm bored, so my demands are that we play a game where you guess how many hostages I have. Do this, and they're all yours.\n\n`,
     `Detective: You know that's impossible. It's between 1 and 100, and that's all anybody knows.\n\n`,
     `????: Well, it seems you have a lot of guessing to do, Detective, so get to it, because their lives depend on it.\n\n`
 ]
@@ -66,7 +68,7 @@ const unhingedStatements = [
     "Great, that one's going to take forever to clean out of the carpet. Lucky me. The state of this box I call a home is really deteriorating.",
     "Now his teddy bear can go to another child. Know that your questions really have made a difference in the world.",
     "I can never relate to only children. I have too many siblings in the Oracle Society, and we're all so very like-minded. I also can't relate to being dead, but that's besides the point.",
-    "Another one bites the dust! Ah, such a good song."
+    "Another one bites the dust! Hopefully they can find a use for the sparkly diamond on her finger."
 ]
 
 const exactGuessButton = document.createElement("button");
